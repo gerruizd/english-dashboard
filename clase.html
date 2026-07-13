@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clase de hoy — English System</title>
+<style>
+  :root{
+    --crema:#fdfbf6; --crema-alt:#f5f0e6; --tinta:#1a1614; --tinta-suave:#6b6560;
+    --dorado:#a98a40; --dorado-suave:#c9ab5f; --navy:#0f1e3d; --verde:#556b2f;
+    --rojo:#8b3a3a; --linea:#e8e2d5;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:Georgia,'Times New Roman',serif;background:var(--crema);color:var(--tinta);line-height:1.6;padding:32px 20px 80px}
+  .container{max-width:760px;margin:0 auto}
+
+  header{margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid var(--linea)}
+  .kicker{font-family:-apple-system,sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--dorado);font-weight:600;margin-bottom:8px}
+  h1{font-size:36px;font-weight:700;letter-spacing:-1px;line-height:1.05}
+  .date{font-size:13px;color:var(--tinta-suave);font-style:italic;margin-top:6px}
+
+  .focus{background:var(--navy);color:var(--crema);padding:24px 26px;margin-bottom:24px}
+  .focus-lbl{font-family:-apple-system,sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--dorado-suave);font-weight:700;margin-bottom:8px}
+  .focus-txt{font-size:21px;font-weight:700;line-height:1.3}
+  .focus-meta{font-size:13px;opacity:.8;margin-top:10px;font-style:italic}
+
+  /* Botón principal */
+  .actions{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:28px}
+  button{font-family:-apple-system,sans-serif;font-size:14px;font-weight:700;letter-spacing:.5px;
+    padding:16px 24px;border:1px solid var(--tinta);background:var(--tinta);color:var(--crema);
+    border-radius:2px;cursor:pointer;flex:1;min-width:180px;transition:all .15s}
+  button:active{transform:scale(.98)}
+  button.ghost{background:transparent;color:var(--tinta)}
+  button.ok{background:var(--verde);border-color:var(--verde)}
+
+  .step{display:flex;gap:14px;padding:14px 0;border-bottom:1px dotted var(--linea);font-size:15px}
+  .step-n{font-family:-apple-system,sans-serif;font-size:11px;font-weight:700;color:var(--crema);
+    background:var(--dorado);width:22px;height:22px;border-radius:50%;display:flex;align-items:center;
+    justify-content:center;flex-shrink:0;margin-top:3px}
+  .step b{display:block}
+  .step em{font-style:italic;color:var(--tinta-suave);font-size:13.5px}
+
+  h2{font-size:12px;font-family:-apple-system,sans-serif;letter-spacing:2px;text-transform:uppercase;
+    color:var(--dorado);font-weight:700;margin:36px 0 14px}
+
+  .card{border:1px solid var(--linea);background:var(--crema);padding:20px 24px;margin-bottom:14px}
+  .card.err{border-left:3px solid var(--rojo)}
+  .card.drill{border-left:3px solid var(--dorado)}
+  .card h3{font-size:17px;margin-bottom:8px}
+  .mono{font-family:'SF Mono','Courier New',monospace;font-size:13.5px;line-height:1.7}
+  .wrong{color:var(--rojo)}.right{color:var(--verde)}
+  .hint{font-size:13px;color:var(--tinta-suave);font-style:italic;margin-top:8px}
+  .tag{display:inline-block;font-family:-apple-system,sans-serif;font-size:9px;letter-spacing:1px;
+    text-transform:uppercase;font-weight:700;padding:3px 8px;border-radius:2px;background:#f3e0e0;
+    color:var(--rojo);margin-left:6px;vertical-align:middle}
+
+  ol.chunks{list-style:none;counter-reset:c}
+  ol.chunks li{counter-increment:c;padding:12px 0 12px 34px;border-bottom:1px dotted var(--linea);position:relative;font-family:'SF Mono','Courier New',monospace;font-size:14px}
+  ol.chunks li:before{content:counter(c);position:absolute;left:0;top:13px;font-family:-apple-system,sans-serif;
+    font-size:10px;font-weight:700;color:var(--tinta-suave);background:var(--crema-alt);width:20px;height:20px;
+    border-radius:50%;display:flex;align-items:center;justify-content:center}
+  ol.chunks li small{display:block;font-family:Georgia,serif;font-size:12.5px;color:var(--tinta-suave);font-style:italic;margin-top:3px}
+
+  pre{background:var(--crema-alt);border:1px solid var(--linea);padding:18px;font-family:'SF Mono','Courier New',monospace;
+    font-size:11.5px;line-height:1.55;white-space:pre-wrap;word-break:break-word;max-height:340px;overflow-y:auto;margin-top:10px}
+
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);
+    background:var(--verde);color:var(--crema);padding:14px 28px;border-radius:2px;
+    font-family:-apple-system,sans-serif;font-size:14px;font-weight:600;transition:transform .25s;z-index:99}
+  .toast.show{transform:translateX(-50%) translateY(0)}
+
+  .loading{padding:60px 0;text-align:center;color:var(--tinta-suave);font-style:italic}
+  footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--linea);font-size:11.5px;color:var(--tinta-suave);font-style:italic}
+  @media(max-width:600px){h1{font-size:28px}button{min-width:100%}}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="kicker">English System · Sesión de 30 min</div>
+    <h1>Clase de hoy</h1>
+    <div class="date" id="date"></div>
+  </header>
+  <div id="app"><div class="loading">Cargando el plan del día…</div></div>
+  <footer id="foot"></footer>
+</div>
+<div class="toast" id="toast">Prompt copiado</div>
+
+<script>
+const URL_BASE = 'https://zfgnbcpwrshfvhczhgzh.supabase.co/rest/v1';
+const FN_CLASE = 'https://zfgnbcpwrshfvhczhgzh.supabase.co/functions/v1/clase';
+const KEY = 'sb_publishable_MpRBV0j74LSWcVgunpCMTw_ayBFK3Ca';
+
+const q = async p => {
+  const r = await fetch(`${URL_BASE}/${p}`, {headers:{apikey:KEY, Authorization:`Bearer ${KEY}`}});
+  if(!r.ok) throw new Error(`${p} → ${r.status}`);
+  return r.json();
+};
+const esc = s => (s??'').toString().replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const today = () => new Date().toISOString().slice(0,10);
+
+let PROMPT = '';
+
+async function load(){
+  document.getElementById('date').textContent =
+    new Date().toLocaleDateString('es-MX', {weekday:'long', day:'numeric', month:'long'});
+
+  try{
+    const plans = await q(`daily_plans?plan_date=eq.${today()}&select=*`);
+    if(!plans.length){
+      document.getElementById('app').innerHTML =
+        `<div class="loading">No hay clase cargada para hoy.<br><br>Pídele a Claude: <strong>"dame la clase de hoy"</strong>.</div>`;
+      return;
+    }
+    const p = plans[0];
+    PROMPT = p.prompt_text || '';
+
+    const [errs, chunks] = await Promise.all([
+      p.error_ids?.length ? q(`errors?id=in.(${p.error_ids.join(',')})&select=*`) : [],
+      p.chunk_ids?.length ? q(`chunks?id=in.(${p.chunk_ids.join(',')})&select=*`) : []
+    ]);
+    // respetar el orden del plan
+    const ordered = ids => arr => ids.map(i => arr.find(x => x.id === i)).filter(Boolean);
+    render(p, ordered(p.error_ids||[])(errs), ordered(p.chunk_ids||[])(chunks));
+  }catch(e){
+    document.getElementById('app').innerHTML = `<div class="loading">Error: ${esc(e.message)}</div>`;
+  }
+}
+
+function render(p, errs, chunks){
+  const errHtml = errs.map(e=>`
+    <div class="card err">
+      <h3>${esc(e.pattern)}${e.state==='microdrill' ? '<span class="tag">microdrill</span>' : ''}</h3>
+      <div class="mono">
+        <span class="wrong">✕ ${esc(e.example_wrong)}</span><br>
+        <span class="right">✓ ${esc(e.example_right)}</span>
+      </div>
+      <div class="hint">${esc(e.rule_hint)}</div>
+    </div>`).join('');
+
+  const chunkHtml = chunks.map(c=>`
+    <li>${esc(c.text)}${c.notes ? `<small>${esc(c.notes)}</small>` : ''}</li>`).join('');
+
+  document.getElementById('app').innerHTML = `
+    <div class="focus">
+      <div class="focus-lbl">Foco único del día</div>
+      <div class="focus-txt">${esc(p.focus)}</div>
+      <div class="focus-meta">Drill ${esc(p.drill_type||'3/2/1')} · ${chunks.length} chunks de repaso · ${errs.length} errores a vigilar${p.completed ? ' · ✓ ya completada' : ''}</div>
+    </div>
+
+    <div class="actions">
+      <button id="copy">Copiar prompt para ChatGPT</button>
+      <button class="ghost" id="openfn">Ver versión texto</button>
+    </div>
+
+    <div class="card">
+      <h3>Cómo arrancar</h3>
+      <div class="step"><div class="step-n">1</div><div><b>Abre un chat nuevo en ChatGPT</b><em>No reutilices el de ayer: arrastra contexto viejo.</em></div></div>
+      <div class="step"><div class="step-n">2</div><div><b>Pega el prompt y envíalo</b><em>Espera a que confirme antes de seguir.</em></div></div>
+      <div class="step"><div class="step-n">3</div><div><b>Toca el ícono de voz en ese mismo chat</b><em>Ahí ya tiene la clase cargada.</em></div></div>
+      <div class="step"><div class="step-n">4</div><div><b>Al terminar, copia el chat completo</b><em>Pégaselo a Claude. Sin eso, la sesión no se guarda.</em></div></div>
+    </div>
+
+    <h2>Errores a vigilar hoy</h2>
+    ${errHtml}
+
+    <h2>Chunks de repaso</h2>
+    <div class="card drill">
+      <ol class="chunks">${chunkHtml}</ol>
+      <div class="hint">No los repitas: aplícalos a una frase nueva sobre tu vida real. Repetir no es recuperar.</div>
+    </div>
+
+    <h2>Prompt completo</h2>
+    <div class="card">
+      <pre id="raw">${esc(PROMPT)}</pre>
+    </div>`;
+
+  document.getElementById('copy').onclick = async () => {
+    try{
+      await navigator.clipboard.writeText(PROMPT);
+    }catch{
+      const t = document.createElement('textarea');
+      t.value = PROMPT; document.body.appendChild(t); t.select();
+      document.execCommand('copy'); t.remove();
+    }
+    const b = document.getElementById('copy');
+    b.textContent = '✓ Copiado'; b.classList.add('ok');
+    const toast = document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(()=>{ toast.classList.remove('show'); b.textContent='Copiar prompt para ChatGPT'; b.classList.remove('ok'); }, 2200);
+  };
+  document.getElementById('openfn').onclick = () => window.open(FN_CLASE, '_blank');
+
+  document.getElementById('foot').innerHTML =
+    `El plan se genera solo desde Supabase según la fecha. Si ChatGPT logra leer la URL de texto,
+     no necesitas copiar nada: dile <strong>"read ${FN_CLASE} and start the session"</strong>.`;
+}
+
+load();
+</script>
+</body>
+</html>
